@@ -9,17 +9,13 @@ const path = require('path');
 const uuid = require('uuid').v4;
 
 console.log('cwd', cwd);
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
 async function createAddon(baseURL, body) {
     const url = baseURL + '/var/sk/addons/upsert'
 
     const options = {
         method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-            authorization: 'Bearer EmptyToken'
-        }
+        body: JSON.stringify(body)
     };
 
     console.log("calling", url);
