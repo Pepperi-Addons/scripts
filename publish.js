@@ -114,7 +114,7 @@ function getFiles(config) {
 async function addVersion(baseURL, data, secret) {
     const options = {
         method: 'POST',
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
         headers: {
             'xx-pepperi-addon-secret-key': secret
         }
