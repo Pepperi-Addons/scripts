@@ -111,6 +111,22 @@ function getFiles(config) {
     return res;
 }
 
+async function addVersion(baseURL, data, secret) {
+    const options = {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'xx-pepperi-addon-secret-key': secret
+        }
+    };
+
+    const url = baseURL + '/var/sk/addons/versions';
+    console.log("calling", url);
+    const res = await fetch(url, options)
+    const json = await res.json();
+    console.log('API response', json);
+}
+
 async function run(secret, bump, configFile) {
     try {
         if (configFile === undefined) {
@@ -134,9 +150,7 @@ async function run(secret, bump, configFile) {
         const files = getFiles(config);
         console.log('files.length', files.length);
 
-        const papiBaseUrl = config.PapiBaseUrl || 'https://papi.pepperi.com/v1.0';
-        const url = papiBaseUrl + '/var/sk/addons/versions'
-        const body = JSON.stringify({
+        const version = {
             Hidden: false,
             Version: config.AddonVersion,
             Description: "",
@@ -144,24 +158,12 @@ async function run(secret, bump, configFile) {
             Phased: false,
             AddonUUID: config.AddonUUID,
             Files: files
-        });
-        console.log(body);
-
-        const options = {
-            method: 'POST',
-            body: body,
-            headers: {
-                'xx-pepperi-addon-secret-key': secret
-            }
         };
-        // console.log('options', options)
 
-        console.log("calling", url);
-        fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
-            console.log('API response', json);
-        });
+        await Promise.all([
+            addVersion('https://papi.pepperi.com/v1.0', version, secret),
+            addVersion('https://papi.sandbox.pepperi.com/v1.0', version, secret),
+        ]);
     }
     catch (err) {
         console.error(err);
