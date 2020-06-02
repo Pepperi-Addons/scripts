@@ -1,0 +1,27 @@
+{
+  "name": "@pepperi-addons/scripts",
+  "version": "1.0.5",
+  "description": "Scripts for building and publishing a Pepperi Addon",
+  "main": "publish.js",
+  "bin": {
+    "publish-addon": "./publish.js",
+    "create-addon": "./create.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm version patch"
+  },
+  "keywords": [
+    "pepperi",
+    "pepperi-addon",
+    "scripts"
+  ],
+  "author": "chasky.h@pepperi.com",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^5.1.0",
+    "node-fetch": "^2.6.0",
+    "semver": "^7.3.2",
+    "uuid": "^8.1.0"
+  }
+}
