@@ -33,7 +33,17 @@ async function getSecret() {
         }));
     });
 }
-
+function bumpedVersion(addonVersion) {
+    return new Promise((resolve, reject) => {
+        if (semver.valid(addonVersion)) {
+            const bumpedVersion = semver.inc(addonVersion, 'patch');
+            resolve(bumpedVersion);            
+        }
+        else {
+            reject(new Error(config.AddonVersion) + ' isn\'t a valid version. See https://semver.org/.');
+        }
+    })
+}
 async function bumpVersion(config, configPath) {
     return new Promise((resolve, reject) => {
         if (semver.valid(config.AddonVersion)) {
@@ -119,7 +129,6 @@ async function addVersion(baseURL, data, secret) {
             'xx-pepperi-addon-secret-key': secret
         }
     };
-
     const url = baseURL + '/var/sk/addons/versions';
     console.log("calling", url);
     const res = await fetch(url, options)
@@ -143,27 +152,27 @@ async function run(secret, bump, configFile) {
             secret = await getSecret()
         }
 
-        if (bump) {
-            await bumpVersion(config, configPath);
-        }
-
         const files = getFiles(config);
         console.log('files.length', files.length);
 
         const version = {
             Hidden: false,
-            Version: config.AddonVersion,
+            Version: bump ? await bumpedVersion(config.AddonVersion): config.AddonVersion,
             Description: "",
             Available: true,
             Phased: false,
             AddonUUID: config.AddonUUID,
             Files: files
         };
-
-        await Promise.all([
-            addVersion('https://papi.pepperi.com/v1.0', version, secret),
-            addVersion('https://papi.sandbox.pepperi.com/v1.0', version, secret),
-        ]);
+        await addVersion('https://papi.sandbox.pepperi.com/v1.0', version, secret)
+        .then(async()=>{
+            // the addon version is bumped only if publish to sandbox was successfully.
+            if (bump) {
+                await bumpVersion(config, configPath);
+            }
+            await addVersion('https://papi.pepperi.com/v1.0', version, secret)
+        })
+        
     }
     catch (err) {
         console.error(err);
