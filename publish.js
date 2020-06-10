@@ -122,7 +122,12 @@ async function addVersion(baseURL, data, secret) {
 
     const url = baseURL + '/var/sk/addons/versions';
     console.log("calling", url);
-    const res = await fetch(url, options)
+    const res = await fetch(url, options);
+
+    if (!res.ok) {
+        throw new Error(`${url} returned ${res.status} - ${res.statusText}`);
+    }
+
     const json = await res.json();
     console.log('API response', json);
 }
