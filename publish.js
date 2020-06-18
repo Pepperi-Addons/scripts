@@ -125,7 +125,7 @@ async function addVersion(baseURL, data, secret) {
     const res = await fetch(url, options);
 
     if (!res.ok) {
-        throw new Error(`${url} returned ${res.status} - ${res.statusText}`);
+        throw new Error(`${url} returned status: ${res.status} - ${res.statusText} error: ${await res.text()}`);
     }
 
     const json = await res.json();
@@ -200,4 +200,4 @@ const program = new Command(packageJson.name)
 
 program.parse(process.argv);
 
-run(program['secret-key'], program['bump-version'] === undefined || program['bump-version'] === true  , program.config);
+run(program['secretKey'], program['bumpVersion'] === undefined || program['bumpVersion'] === true, program.config);
