@@ -181,15 +181,19 @@ const program = new Command(packageJson.name)
     .version(packageJson.version)
     .description('A script for publishing the Pepperi addon to the var API')
     .option(
-        '-sk, --secret-key', 
+        '-sk, --secret-key <secret>', 
         'The secret key for publishing the addon. By default, looks for file ./var_sk`'
     )
     .option(
-        '-b, --bump-version',
+        '--bump-version',
         'Bump the version number (eg. 1.0.3 -> 1.0.4). Only works if the version is a valid ver-sem. true by default.'
     )
     .option(
-        '-c, --config',
+        '--no-bump-version',
+        'Do not bump the version'
+    )
+    .option(
+        '-c, --config <config>',
         'The addon config json file relative to the current working directory. By default looks for addon.local.config.json'
     )
 
