@@ -132,7 +132,7 @@ async function addVersion(baseURL, data, secret) {
     console.log('API response', json);
 }
 
-async function run(secret, bump, configFile) {
+async function run(secret, bump, configFile, versionDescription) {
     try {
         if (configFile === undefined) {
             configFile = 'addon.config.json'
@@ -158,7 +158,7 @@ async function run(secret, bump, configFile) {
         const version = {
             Hidden: false,
             Version: config.AddonVersion,
-            Description: "",
+            Description: versionDescription,
             Available: true,
             Phased: false,
             AddonUUID: config.AddonUUID,
@@ -196,8 +196,12 @@ const program = new Command(packageJson.name)
         '-c, --config <config>',
         'The addon config json file relative to the current working directory. By default looks for addon.local.config.json'
     )
+    .option(
+        '-d, --desc <desc>',
+        'The version description. Empty by default.'
+    )
 
 
 program.parse(process.argv);
 
-run(program['secretKey'], program['bumpVersion'] === undefined || program['bumpVersion'] === true, program.config);
+run(program['secretKey'], program['bumpVersion'] === undefined || program['bumpVersion'] === true, program.config, program.desc || '');
