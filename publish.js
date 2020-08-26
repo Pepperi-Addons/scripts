@@ -34,10 +34,10 @@ async function getSecret() {
     });
 }
 
-async function bumpVersion(config, configPath) {
+async function bumpVersion(config, configPath, versionType) {
     return new Promise((resolve, reject) => {
         if (semver.valid(config.AddonVersion)) {
-            const bumpedVersion = semver.inc(config.AddonVersion, 'patch');
+            const bumpedVersion = semver.inc(config.AddonVersion, versionType);
             console.log(`Bumping addon version from ${config.AddonVersion} to ${bumpedVersion}`)
             config.AddonVersion = bumpedVersion;
 
@@ -132,8 +132,13 @@ async function addVersion(baseURL, data, secret) {
     console.log('API response', json);
 }
 
-async function run(secret, bump, configFile) {
+async function run(secret, bump, versionType, configFile) {
     try {
+        console.log("version type is:", versionType);
+        if(versionType != 'patch' && versionType != 'minor' && versionType != 'major') {
+            throw new Error('version type should be one of the options \'major/minor/patch\' only');
+        }
+
         if (configFile === undefined) {
             configFile = 'addon.config.json'
         }
@@ -149,7 +154,7 @@ async function run(secret, bump, configFile) {
         }
 
         if (bump) {
-            await bumpVersion(config, configPath);
+            await bumpVersion(config, configPath, versionType);
         }
 
         const files = getFiles(config);
@@ -196,8 +201,13 @@ const program = new Command(packageJson.name)
         '-c, --config <config>',
         'The addon config json file relative to the current working directory. By default looks for addon.local.config.json'
     )
+    .option(
+        '--version-type <versionType>',
+        'change the version type. can be one of the value \'major\'/\'minor\'/\'patch\'. default value is \'patch\'',
+        'patch'
+    )
 
 
 program.parse(process.argv);
 
-run(program['secretKey'], program['bumpVersion'] === undefined || program['bumpVersion'] === true, program.config);
+run(program['secretKey'], program['bumpVersion'] === undefined || program['bumpVersion'] === true, program['versionType'], program.config);
