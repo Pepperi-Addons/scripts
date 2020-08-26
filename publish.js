@@ -132,7 +132,7 @@ async function addVersion(baseURL, data, secret) {
     console.log('API response', json);
 }
 
-async function run(secret, bump, versionType, configFile) {
+async function run(secret, bump, configFile, versionDescription, versionType) {
     try {
         console.log("version type is:", versionType);
         if(versionType != 'patch' && versionType != 'minor' && versionType != 'major') {
@@ -163,7 +163,7 @@ async function run(secret, bump, versionType, configFile) {
         const version = {
             Hidden: false,
             Version: config.AddonVersion,
-            Description: "",
+            Description: versionDescription,
             Available: true,
             Phased: false,
             AddonUUID: config.AddonUUID,
@@ -206,8 +206,12 @@ const program = new Command(packageJson.name)
         'change the version type. can be one of the value \'major\'/\'minor\'/\'patch\'. default value is \'patch\'',
         'patch'
     )
+    .option(
+        '-d, --desc <desc>',
+        'The version description. Empty by default.'
+    )
 
 
 program.parse(process.argv);
 
-run(program['secretKey'], program['bumpVersion'] === undefined || program['bumpVersion'] === true, program['versionType'], program.config);
+run(program['secretKey'], program['bumpVersion'] === undefined || program['bumpVersion'] === true, program.config, program.desc || '', program['versionType']);
