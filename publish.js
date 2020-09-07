@@ -172,7 +172,7 @@ async function run(secret, bump, configFile, versionDescription, versionType) {
 
         await Promise.all([
             addVersion('https://papi.pepperi.com/v1.0', version, secret),
-            addVersion('https://papi.sandbox.pepperi.com/v1.0', version, secret),
+            addVersion('https://papi.staging.pepperi.com/v1.0', version, secret),
         ]);
     }
     catch (err) {
