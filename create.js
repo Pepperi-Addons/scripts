@@ -60,7 +60,7 @@ async function run(options) {
         };
         
         await Promise.all([
-            createAddon('https://papi.sandbox.pepperi.com/v1.0', addon),
+            createAddon('https://papi.staging.pepperi.com/v1.0', addon),
             createAddon('https://papi.pepperi.com/v1.0', addon),
         ]);
 
