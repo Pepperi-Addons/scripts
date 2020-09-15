@@ -98,7 +98,7 @@ const program = new Command(packageJson.name)
 program.parse(process.argv);
 
 run({
-    name: program['addon-name'] || path.basename(cwd),
-    uuid: program['addon-uuid'] || uuid(),
-    description: program['addon-description'] || ''
+    name: program['addonName'] || path.basename(cwd),
+    uuid: program['addonUuid'] || uuid(),
+    description: program['addonDescription'] || ''
 });
