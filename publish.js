@@ -167,7 +167,8 @@ async function run(secret, bump, configFile, versionDescription, versionType) {
             Available: true,
             Phased: false,
             AddonUUID: config.AddonUUID,
-            Files: files
+            Files: files,
+            PublishConfig: config.PublishConfig ? JSON.stringify(config.PublishConfig): '{}'
         };
 
         await Promise.all([
