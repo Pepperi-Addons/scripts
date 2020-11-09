@@ -7,6 +7,12 @@ const fetch = require('node-fetch');
 const cwd = process.cwd();
 const path = require('path');
 const uuid = require('uuid').v4;
+const chalk = require('chalk');
+const clear = require('clear');
+const figlet = require('figlet');
+// const files = require('./lib/files');
+const inquirer = require('./lib/inquirer');
+const Spinner = require('cli-spinner').Spinner;
 
 console.log('cwd', cwd);
 
@@ -41,6 +47,10 @@ async function writeFile(data, path) {
 
 async function run(options) {
     try {
+
+        const userInput = await runWizard();
+
+        // const serverSideTmp = userInput.template.serverLanguage || 'typescript';
         const configPath = path.join(cwd, 'addon.config.json');
         const config = require(configPath);
         if (!config) {
@@ -50,13 +60,15 @@ async function run(options) {
         const secretPath = path.join(cwd, 'var_sk');
         const secretKey = uuid();
 
+
         const addon = {
-            UUID: options.uuid,
-            Name: options.name,
-            Description: options.description,
+            UUID: userInput.metadata.addonuuid || options.uuid,
+            Name: userInput.metadata.addonname || options.name,
+            Description: userInput.metadata.addondescription || options.description,
             SystemData: "{ \"AngularPlugin\":true, \"EditorName\":\"editor\"  }",
             Hidden: false,
-            SecretKey: secretKey
+            SecretKey: secretKey,
+            Type: userInput
         };
         
         await Promise.all([
@@ -65,6 +77,9 @@ async function run(options) {
         ]);
 
         config.AddonUUID = options.uuid;
+        config.AddonName = userInput.metadata.addonname;
+        config.AddonDescription = userInput.metadata.addondescription;
+        // config.AddonType = userInput.metadata.addontype;
         
         await Promise.all([
             writeFile(JSON.stringify(config, null, 2), configPath),
@@ -77,6 +92,29 @@ async function run(options) {
         process.exit(-1);
     }
 }
+
+
+async function runWizard() {
+    // console.log(chalk.red('\n --- Write your credentials for a token: \n'));
+    // const credentials = await inquirer.askPepperiCredentials();
+    console.log(chalk.yellow('\n --- Pepperi - New Addon Wizard: \n'));
+    const metadata = await inquirer.askForAddonMetadata();
+  
+    // const template = { servertemplate: 'typescript', framework: 'angular', version: '10' };
+    // const credentials = { username: 'lk', password: 'l' };
+    // const addonMetadata = {
+    //     addonname: 'l',
+    //     addondescription: 'l',
+    //     addontype: 'Sytem',
+    //     addonuuid: 'l',
+    //     usengxlib: true
+    // };
+
+    return { metadata };
+
+
+}
+
 
 const program = new Command(packageJson.name)
     .version(packageJson.version)
