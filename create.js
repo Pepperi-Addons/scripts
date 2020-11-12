@@ -8,7 +8,6 @@ const cwd = process.cwd();
 const path = require('path');
 const uuid = require('uuid').v4;
 
-
 console.log('cwd', cwd);
 
 async function createAddon(baseURL, body) {
@@ -51,22 +50,22 @@ async function run(options) {
         const secretPath = path.join(cwd, 'var_sk');
         const secretKey = uuid();
 
-
         const addon = {
             UUID: options.uuid,
             Name: options.name,
             Description: options.description,
             SystemData: "{ \"AngularPlugin\":true, \"EditorName\":\"editor\"  }",
             Hidden: false,
-            SecretKey: secretKey,
-            Type: 4
+            SecretKey: secretKey
         };
         
         await Promise.all([
             createAddon('https://papi.staging.pepperi.com/v1.0', addon),
             createAddon('https://papi.pepperi.com/v1.0', addon),
         ]);
-       
+
+        config.AddonUUID = options.uuid;
+        
         await Promise.all([
             writeFile(JSON.stringify(config, null, 2), configPath),
             writeFile(secretKey, secretPath)
@@ -78,10 +77,6 @@ async function run(options) {
         process.exit(-1);
     }
 }
-
-
-
-
 
 const program = new Command(packageJson.name)
     .version(packageJson.version)
