@@ -7,12 +7,7 @@ const fetch = require('node-fetch');
 const cwd = process.cwd();
 const path = require('path');
 const uuid = require('uuid').v4;
-const chalk = require('chalk');
-const clear = require('clear');
-const figlet = require('figlet');
-// const files = require('./lib/files');
-const inquirer = require('./lib/inquirer');
-const Spinner = require('cli-spinner').Spinner;
+
 
 console.log('cwd', cwd);
 
@@ -47,10 +42,6 @@ async function writeFile(data, path) {
 
 async function run(options) {
     try {
-
-        const userInput = await runWizard();
-
-        // const serverSideTmp = userInput.template.serverLanguage || 'typescript';
         const configPath = path.join(cwd, 'addon.config.json');
         const config = require(configPath);
         if (!config) {
@@ -62,25 +53,20 @@ async function run(options) {
 
 
         const addon = {
-            UUID: userInput.metadata.addonuuid || options.uuid,
-            Name: userInput.metadata.addonname || options.name,
-            Description: userInput.metadata.addondescription || options.description,
+            UUID: options.uuid,
+            Name: options.name,
+            Description: options.description,
             SystemData: "{ \"AngularPlugin\":true, \"EditorName\":\"editor\"  }",
             Hidden: false,
             SecretKey: secretKey,
-            Type: userInput
+            Type: 4
         };
         
         await Promise.all([
             createAddon('https://papi.staging.pepperi.com/v1.0', addon),
             createAddon('https://papi.pepperi.com/v1.0', addon),
         ]);
-
-        config.AddonUUID = options.uuid;
-        config.AddonName = userInput.metadata.addonname;
-        config.AddonDescription = userInput.metadata.addondescription;
-        // config.AddonType = userInput.metadata.addontype;
-        
+       
         await Promise.all([
             writeFile(JSON.stringify(config, null, 2), configPath),
             writeFile(secretKey, secretPath)
@@ -94,26 +80,7 @@ async function run(options) {
 }
 
 
-async function runWizard() {
-    // console.log(chalk.red('\n --- Write your credentials for a token: \n'));
-    // const credentials = await inquirer.askPepperiCredentials();
-    console.log(chalk.yellow('\n --- Pepperi - New Addon Wizard: \n'));
-    const metadata = await inquirer.askForAddonMetadata();
-  
-    // const template = { servertemplate: 'typescript', framework: 'angular', version: '10' };
-    // const credentials = { username: 'lk', password: 'l' };
-    // const addonMetadata = {
-    //     addonname: 'l',
-    //     addondescription: 'l',
-    //     addontype: 'Sytem',
-    //     addonuuid: 'l',
-    //     usengxlib: true
-    // };
 
-    return { metadata };
-
-
-}
 
 
 const program = new Command(packageJson.name)
