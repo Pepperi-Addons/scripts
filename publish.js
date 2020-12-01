@@ -85,7 +85,13 @@ function getFiles(config) {
     if (config.Editors && config.Editors.length) {
         config.Editors.forEach(editor => {
             // replace ts with js
-            const file = editor + '.plugin.bundle.js';
+            let file;
+            if (config.PublishConfig && config.PublishConfig.ClientStack && config.PublishConfig.ClientStack === 'ng10'){
+                file = 'main.js';
+            }
+            else {
+                file = editor + '.plugin.bundle.js';
+            }
             const filePath = path.join(cwd,'publish','editors', file);
             if (fs.existsSync(filePath)) {
                 res.push(getFile(file, filePath));
