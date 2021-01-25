@@ -64,49 +64,42 @@ function getFile(name, path) {
     };
 }
 
+function getFolderFiles(dir) {
+    var results = [];
+    const list = fs.readdirSync(dir);
+    
+    for (const x of list) {
+        var file = path.resolve(dir, x);
+        const stat = fs.statSync(file);
+
+        if (stat && stat.isDirectory()) {
+            const files = getFolderFiles(file);
+            results = results.concat(files);
+        }
+        else {
+            results.push(file);
+        }
+    }
+
+    return results;
+}
+
 function getFiles(config) {
     const res = [];
 
-    if (config.Endpoints && config.Endpoints.length) {
-        config.Endpoints.forEach(endpoint => {
-
-            // replace ts with js
-            const file = path.parse(endpoint).name + '.js'
-            const filePath = path.join(cwd ,'publish', 'api', file);
-            if (fs.existsSync(filePath)) {
-                res.push(getFile(file, filePath));
-            }
-            else {
-                console.log(`Skipping API file ${endpoint} - couldn't be found at path ${filePath}`);
-            }
-        });
-    }
-
-    if (config.Editors && config.Editors.length) {
-        config.Editors.forEach(editor => {
-            // replace ts with js
-            const file = editor + '.plugin.bundle.js';
-            const filePath = path.join(cwd,'publish','editors', file);
-            if (fs.existsSync(filePath)) {
-                res.push(getFile(file, filePath));
-            }
-            else {
-                console.log(`Skipping Editor file ${editor} - couldn't be found at path ${filePath}`);
-            }
-        });
-    }
-
-    if (config.Assets && config.Assets.length) {
-        config.Assets.forEach(asset => {
-            const file = path.join(cwd, 'publish', 'assets', asset);
-            if (fs.existsSync(file)) {
-                res.push(getFile(asset, file));
-            }
-            else {
-                console.log(`Skipping Editor file ${asset} - couldn't be found at path ${file}`);
-            }
-        });
-    }
+    const publishDir = path.join(cwd, 'publish');
+    const files = getFolderFiles(publishDir);
+    files.forEach(file => {
+        // get the relative path to the publish folder
+        const relative = file.slice(publishDir.length + 1).toLowerCase();
+        
+        if (fs.existsSync(file)) {
+            res.push(getFile(relative, file));
+        }
+        else {
+            console.log(`Skipping Editor file ${relative} - couldn't be found at path ${file}`);
+        }
+    });
 
     return res;
 }
