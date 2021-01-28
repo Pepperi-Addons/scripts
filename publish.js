@@ -91,7 +91,7 @@ function getFiles(config) {
     const files = getFolderFiles(publishDir);
     files.forEach(file => {
         // get the relative path to the publish folder
-        const relative = file.slice(publishDir.length + 1).toLowerCase();
+        const relative = file.slice(publishDir.length + 1);
         
         if (fs.existsSync(file)) {
             res.push(getFile(relative, file));
