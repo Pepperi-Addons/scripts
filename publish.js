@@ -58,7 +58,7 @@ async function bumpVersion(config, configPath, versionType) {
 
 function getFile(name, path) {
     return {
-        FileName: name,
+        FileName: name.replace(new RegExp('\\\\','g'),'/'),
         URL: '',
         Base64Content: fs.readFileSync(path, { encoding: 'base64' })
     };
