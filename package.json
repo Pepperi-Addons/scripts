@@ -5,7 +5,8 @@
   "main": "publish.js",
   "bin": {
     "publish-addon": "./publish.js",
-    "create-addon": "./create.js"
+    "create-addon": "./create.js",
+    "cpi-node-debug": "./cpi-node-debug.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
