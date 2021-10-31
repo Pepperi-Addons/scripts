@@ -39,8 +39,15 @@ async function run() {
             }
         };
         // console.log(options);
-    
-        const url = baseURL + '/Service1.svc/v1/Addon/Api/4b133404-ca94-4fb7-8845-4ac0a501423c/cpi-node-debugger/files';
+        let url = '/Addon/Api/4b133404-ca94-4fb7-8845-4ac0a501423c/cpi-node-debugger/files';
+        if (process.platform === 'darwin') {
+            // debugging on mac catalyist
+            url = baseURL + url;
+            options.headers['Content-Type'] = 'application/json';
+        }
+        else {
+            url = baseURL + '/Service1.svc/v1' + url;
+        }
         console.log("calling", url);
         const res = await fetch(url, options);
     
