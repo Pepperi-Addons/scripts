@@ -1,6 +1,6 @@
 {
   "name": "@pepperi-addons/scripts",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Scripts for building and publishing a Pepperi Addon",
   "main": "publish.js",
   "bin": {
