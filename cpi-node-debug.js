@@ -35,18 +35,16 @@ async function run() {
             headers: {
                 'PepperiSessionToken': sessionToken,
                 'Authorization': 'Bearer ' + jwt,
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             }
         };
         // console.log(options);
-        let url = '/Addon/Api/4b133404-ca94-4fb7-8845-4ac0a501423c/cpi-node-debugger/files';
         if (process.platform === 'darwin') {
             // debugging on mac catalyist
-            url = baseURL + url;
-            options.headers['Content-Type'] = 'application/json';
+            url = baseURL + '/debugger/files';
         }
         else {
-            url = baseURL + '/Service1.svc/v1' + url;
+            url = baseURL + '/Service1.svc/v1' + '/Addons/Api/4b133404-ca94-4fb7-8845-4ac0a501423c/cpi-node-debugger/files';
         }
         console.log("calling", url);
         const res = await fetch(url, options);
