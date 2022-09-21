@@ -66,11 +66,16 @@ async function run(options) {
 
         config.AddonUUID = options.uuid;
         
-        const appConfigPath = path.join(cwd, 'client-side/src/app/app.config.ts');
-        const appConfig = fs.readFileSync(appConfigPath);
-        if (appConfig) {
-            const newContent = appConfig.toString().replace('[ADDON_UUID]', options.uuid);
-            await writeFile(newContent, appConfigPath);
+        try {
+            const appConfigPath = path.join(cwd, 'client-side/src/app/app.config.ts');
+            const appConfig = fs.readFileSync(appConfigPath);
+            if (appConfig) {
+                const newContent = appConfig.toString().replace('[ADDON_UUID]', options.uuid);
+                await writeFile(newContent, appConfigPath);
+            }
+        }
+        catch (error) {
+            console.log('cannot update client-side app.config.ts');
         }
 
         await Promise.all([
