@@ -82,7 +82,7 @@ async function run(options) {
         if (fs.existsSync(cpiDebuggerConfigPath)) {
             const cpiDebuggerConfig = fs.readFileSync(cpiDebuggerConfigPath);
             if (cpiDebuggerConfig) {
-                const newContent = appConfig.toString().replace('{{Addon_UUID}}', options.uuid);
+                const newContent = cpiDebuggerConfig.toString().replace('[ADDON_UUID]', options.uuid);
                 await writeFile(newContent, cpiDebuggerConfig);
             }
         }
