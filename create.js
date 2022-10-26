@@ -83,7 +83,7 @@ async function run(options) {
             const cpiDebuggerConfig = fs.readFileSync(cpiDebuggerConfigPath);
             if (cpiDebuggerConfig) {
                 const newContent = cpiDebuggerConfig.toString().replace('[ADDON_UUID]', options.uuid);
-                await writeFile(newContent, cpiDebuggerConfig);
+                await writeFile(newContent, cpiDebuggerConfigPath);
             }
         }
 
