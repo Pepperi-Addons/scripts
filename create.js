@@ -78,6 +78,15 @@ async function run(options) {
             console.log('cannot update client-side app.config.ts');
         }
 
+        const cpiDebuggerConfigPath = path.join(cwd, 'cpi-side/debugger.config.json');
+        if (fs.existsSync(cpiDebuggerConfigPath)) {
+            const cpiDebuggerConfig = fs.readFileSync(cpiDebuggerConfigPath);
+            if (cpiDebuggerConfig) {
+                const newContent = appConfig.toString().replace('{{Addon_UUID}}', options.uuid);
+                await writeFile(newContent, cpiDebuggerConfig);
+            }
+        }
+
         await Promise.all([
             writeFile(JSON.stringify(config, null, 2), configPath),
             writeFile(secretKey, secretPath)
