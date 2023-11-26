@@ -162,7 +162,10 @@ async function run(secret, bump, configFile, versionDescription, versionType) {
             AddonUUID: config.AddonUUID,
             Files: files,
             PublishConfig: config.PublishConfig ? JSON.stringify(config.PublishConfig): '{}',
-            FileConfig: config.FileConfig // Send as object, if not exists, will be ignored
+            FileConfig: {
+                Endpoints: config.Endpoints || {},
+                AddonPackage: config.AddonPackage || {},
+            }
         };
 
         await Promise.all([
